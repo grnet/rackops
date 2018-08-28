@@ -9,15 +9,6 @@ from subprocess import Popen
 from slimit.visitors import nodevisitor
 
 class Lenovo(ProviderBase):
-    def info(self):
-        if getattr(self.host, "get_short_info", None):
-            info = self.host.get_short_info()
-        else:
-            info = self.host.get_info()
-
-        for key, val in info.iteritems():
-            print key.replace("_", " ").upper()  + ": " + val
-
     def _get_console_cookies(self):
         return {'Cookie': 'Language=EN; SessionExpired=true;'}
 

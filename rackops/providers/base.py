@@ -12,7 +12,13 @@ class ProviderBase(object):
         self.password = password
 
     def info(self):
-        raise NotImplementedError("info not implemented in child class")
+        if getattr(self.host, "get_short_info", None):
+            info = self.host.get_short_info()
+        else:
+            info = self.host.get_info()
+
+        for key, val in info.iteritems():
+            print key.replace("_", " ").upper()  + ": " + val
 
     def console(self):
         raise NotImplementedError("console not implemented in child class")
