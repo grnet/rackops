@@ -71,7 +71,7 @@ def main():
     parser.add_argument(
         "-p",
         "--password",
-        action="store",
+        action="store_true",
         help="IPMI password",
         default=None
     )
