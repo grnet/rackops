@@ -4,7 +4,7 @@ import slimit
 import requests
 import re
 
-from base import ProviderBase
+from providers.base import ProviderBase
 from subprocess import Popen
 from slimit.visitors import nodevisitor
 

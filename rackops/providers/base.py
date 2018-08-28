@@ -18,7 +18,7 @@ class ProviderBase(object):
             info = self.host.get_info()
 
         for key, val in info.iteritems():
-            print key.replace("_", " ").upper()  + ": " + val
+            print (key.replace("_", " ").upper(), ": ", val)
 
     def console(self):
         raise NotImplementedError("console not implemented in child class")

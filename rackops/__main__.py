@@ -16,7 +16,7 @@ def get_config(config_path):
     try:
         contents = json.loads(contents)
     except ValueError as e:
-        print "Configuration file %s doesn't contain valid JSON" % (config_path)
+        print ("Configuration file %s doesn't contain valid JSON") % (config_path)
         exit(1)
 
     return contents

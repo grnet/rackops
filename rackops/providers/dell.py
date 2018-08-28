@@ -1,7 +1,7 @@
 import sys
 
 from subprocess import Popen
-from base import ProviderBase
+from providers.base import ProviderBase
 
 class Dell(ProviderBase):
     def console(self):

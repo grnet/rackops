@@ -2,7 +2,7 @@ import requests
 import json
 import sys
 
-from base import HostBase
+from hosts.base import HostBase
 
 class Netbox(HostBase):
     def __init__(self, identifier, api_url):

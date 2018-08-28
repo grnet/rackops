@@ -1,4 +1,4 @@
-import urllib2
+import urllib
 import sys
 import re
 import tempfile
@@ -6,17 +6,17 @@ import tempfile
 from bs4 import BeautifulSoup
 from subprocess import Popen
 
-from base import ProviderBase
+from providers.base import ProviderBase
 
 class Fujitsu(ProviderBase):
     def _get_realm(self):
         """does an unauthenticated request to get the real for auth afterwards."""
-        opener = urllib2.build_opener()
-        urllib2.install_opener(opener)
+        opener = urllib.build_opener()
+        urllib.install_opener(opener)
         try:
-            urllib2.urlopen(self.host.get_ipmi_host())
+            urllib.urlopen(self.host.get_ipmi_host())
         #except Exception as err:
-        except urllib2.HTTPError as err:
+        except urllib.HTTPError as err:
             header = err.headers.getheader('WWW-Authenticate')
             m = re.match('Digest realm="([@\w\s-]+)",', header)
             realm = m.groups()[0]
@@ -30,18 +30,18 @@ class Fujitsu(ProviderBase):
         username = self.username
         password = self.password
 
-        auth_handler = urllib2.HTTPDigestAuthHandler()
+        auth_handler = urllib.HTTPDigestAuthHandler()
         auth_handler.add_password(realm=realm,
                                   uri=uri, user=username, passwd=password)
-        opener = urllib2.build_opener(auth_handler)
-        urllib2.install_opener(opener)
+        opener = urllib.build_opener(auth_handler)
+        urllib.install_opener(opener)
 
     def _find_avr_url(self):
         """Parse the main page to find the url for the jws"""
         url = self.host.get_ipmi_host()
 
-        req = urllib2.Request(url)
-        data = urllib2.urlopen(req).read()
+        req = urllib.Request(url)
+        data = urllib.urlopen(req).read()
         soup = BeautifulSoup(data)
         jnlp_desc = [u'Video Redirection (JWS)']
         links = soup.find_all('a', href=True)
@@ -52,7 +52,7 @@ class Fujitsu(ProviderBase):
     def _save_tmp_jnlp(self):
         """ Fetch the xml jnlp file and save in tmp"""
         avr_url = self._find_avr_url()
-        xml_data = urllib2.urlopen(urllib2.Request(avr_url)).read()
+        xml_data = urllib.urlopen(urllib.Request(avr_url)).read()
         _, tmppath = tempfile.mkstemp()
         with open(tmppath, 'w') as tmpfile:
             tmpfile.write(xml_data)
