@@ -1,6 +1,8 @@
 from hosts.netbox import Netbox
 
 from providers.lenovo import Lenovo
+from providers.dell import Dell
+from providers.fujitsu import Fujitsu
 
 class Rackops:
     COMMANDS = ["info", "console"]
@@ -18,7 +20,10 @@ class Rackops:
 
     def _providers_table(self):
         return {
-            'lenovo': Lenovo
+            'lenovo': Lenovo,
+            'dell': Dell,
+            'dell-inc': Dell,
+            'fujitsu': Fujitsu
         }
 
     def _get_host(self):
