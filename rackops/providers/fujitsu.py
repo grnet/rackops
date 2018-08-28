@@ -1,4 +1,12 @@
-import urllib
+try:
+    # Python 3
+    from urllib import request
+    from urllib import error as urlerror
+except ImportError:
+    # Python 2
+    import urllib2 as request
+    urlerror = request
+
 import sys
 import re
 import tempfile
@@ -11,13 +19,13 @@ from providers.base import ProviderBase
 class Fujitsu(ProviderBase):
     def _get_realm(self):
         """does an unauthenticated request to get the real for auth afterwards."""
-        opener = urllib.build_opener()
-        urllib.install_opener(opener)
+        opener = request.build_opener()
+        request.install_opener(opener)
         try:
-            urllib.urlopen(self.host.get_ipmi_host())
+            request.urlopen(self.host.get_ipmi_host())
         #except Exception as err:
-        except urllib.HTTPError as err:
-            header = err.headers.getheader('WWW-Authenticate')
+        except urlerror.HTTPError as err:
+            header = err.headers.get('WWW-Authenticate')
             m = re.match('Digest realm="([@\w\s-]+)",', header)
             realm = m.groups()[0]
         return realm
@@ -30,18 +38,18 @@ class Fujitsu(ProviderBase):
         username = self.username
         password = self.password
 
-        auth_handler = urllib.HTTPDigestAuthHandler()
+        auth_handler = request.HTTPDigestAuthHandler()
         auth_handler.add_password(realm=realm,
                                   uri=uri, user=username, passwd=password)
-        opener = urllib.build_opener(auth_handler)
-        urllib.install_opener(opener)
+        opener = request.build_opener(auth_handler)
+        request.install_opener(opener)
 
     def _find_avr_url(self):
         """Parse the main page to find the url for the jws"""
         url = self.host.get_ipmi_host()
 
-        req = urllib.Request(url)
-        data = urllib.urlopen(req).read()
+        req = request.Request(url)
+        data = request.urlopen(req).read()
         soup = BeautifulSoup(data)
         jnlp_desc = [u'Video Redirection (JWS)']
         links = soup.find_all('a', href=True)
@@ -52,7 +60,8 @@ class Fujitsu(ProviderBase):
     def _save_tmp_jnlp(self):
         """ Fetch the xml jnlp file and save in tmp"""
         avr_url = self._find_avr_url()
-        xml_data = urllib.urlopen(urllib.Request(avr_url)).read()
+        resource = request.urlopen(request.Request(avr_url))
+        xml_data = resource.read().decode('utf-8')
         _, tmppath = tempfile.mkstemp()
         with open(tmppath, 'w') as tmpfile:
             tmpfile.write(xml_data)
