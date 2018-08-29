@@ -32,7 +32,6 @@ class Netbox(HostBase):
         json_response = self._do_request()
 
         # we expect the response to be a json object
-        print json_response.json()
         return json.loads(json_response.json())
 
 
