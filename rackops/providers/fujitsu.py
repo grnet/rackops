@@ -14,7 +14,7 @@ import tempfile
 from bs4 import BeautifulSoup
 from subprocess import Popen
 
-from providers.base import ProviderBase
+from rackops.providers.base import ProviderBase
 
 class Fujitsu(ProviderBase):
     def _get_realm(self):

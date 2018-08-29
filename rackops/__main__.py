@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-from rackops import Rackops
+from rackops.rackops import Rackops
 from getpass import getpass
 
 def get_config(config_path):

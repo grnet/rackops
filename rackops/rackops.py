@@ -1,8 +1,8 @@
-from hosts.netbox import Netbox
+from rackops.hosts.netbox import Netbox
 
-from providers.lenovo import Lenovo
-from providers.dell import Dell
-from providers.fujitsu import Fujitsu
+from rackops.providers.lenovo import Lenovo
+from rackops.providers.dell import Dell
+from rackops.providers.fujitsu import Fujitsu
 
 class Rackops:
     COMMANDS = ["info", "console"]
