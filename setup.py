@@ -24,6 +24,12 @@ def setup_package():
                 'rackops=rackops.__main__:main',
             ],
         },
+        install_requires=[
+            'requests',
+            'slimit',
+            'bs4',
+            ],
+
     )
 
 if __name__ == '__main__':
