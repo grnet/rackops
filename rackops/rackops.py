@@ -5,7 +5,9 @@ from rackops.providers.dell import Dell
 from rackops.providers.fujitsu import Fujitsu
 
 class Rackops:
-    COMMANDS = ["info", "console", "open", "status", "power-status", "power-on", "power-off"]
+    COMMANDS = ["info", "console", "open", "status",
+        "power-status", "power-on", "power-off", "power-cycle", "power-reset",
+        "boot-pxe", "boot-local"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier

@@ -87,6 +87,18 @@ class ProviderBase(object):
                 if 'off' in self._execute(['chassis', 'power', 'status'], output=True):
                     break
 
+    def power_cycle(self):
+        self._execute(['chassis', 'power', 'cycle'])
+
+    def power_reset(self):
+        self._execute(['chassis', 'power', 'reset'])
+
+    def boot_pxe(self):
+        self._execute(['chassis', 'bootdev', 'pxe'])
+
+    def boot_local(self):
+        self._execute(['chassis', 'bootdev', 'disk'])
+
     def console(self):
         raise NotImplementedError("console not implemented in child class")
 
