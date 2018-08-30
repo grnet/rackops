@@ -5,7 +5,7 @@ from rackops.providers.dell import Dell
 from rackops.providers.fujitsu import Fujitsu
 
 class Rackops:
-    COMMANDS = ["info", "console"]
+    COMMANDS = ["info", "console", "open"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier

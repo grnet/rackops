@@ -1,3 +1,7 @@
+import sys
+
+from subprocess import Popen
+
 class ProviderBase(object):
     URL_LOGIN = '/rpc/WEBSES/create.asp'
     URL_VNC = '/Java/jviewer.jnlp?EXTRNIP={}&JNLPSTR=JViewer'
@@ -23,6 +27,12 @@ class ProviderBase(object):
     def console(self):
         raise NotImplementedError("console not implemented in child class")
 
+    def open(self):
+        try:
+            Popen(['open', self.host.get_ipmi_host()])
+        except:
+            sys.stderr.write("Couldn't open browser. Exiting...\n")
+            sys.exit(10)
 
 
 class ProviderError(Exception):
