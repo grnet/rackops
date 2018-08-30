@@ -32,7 +32,7 @@ class Netbox(HostBase):
         json_response = self._do_request()
 
         # we expect the response to be a json object
-        return json.loads(json_response.json())
+        return json_response.json()
 
 
     def get_short_info(self):
