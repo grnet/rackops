@@ -42,6 +42,7 @@ class Rackops:
                 host,
                 username=self.config["username"],
                 password=self.config["password"],
+                verbose=self.config["verbose"],
                 force=self.config["force"],
                 wait=self.config["wait"]
             )

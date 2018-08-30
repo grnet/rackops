@@ -10,11 +10,12 @@ class ProviderBase(object):
     # Defines the interface for providers
     # and implements basic functionality.
     def __init__(self, command, host, username=None, password=None,
-        wait=False, force=False):
+        verbose=False, wait=False, force=False):
         self.command = command
         self.host = host
         self.username = username
         self.password = password
+        self.verbose = verbose
         self.wait = wait
         self.force = force
 
@@ -44,6 +45,8 @@ class ProviderBase(object):
         prefix = self._get_ipmi_tool_prefix()
         command = prefix + command
         try:
+            if self.verbose:
+                print ("Exeucting:\n%s" % ' '.join(command))
             if output:
                 return check_output(command).decode('utf-8')
 
