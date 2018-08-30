@@ -5,7 +5,7 @@ from rackops.providers.dell import Dell
 from rackops.providers.fujitsu import Fujitsu
 
 class Rackops:
-    COMMANDS = ["info", "console", "open"]
+    COMMANDS = ["info", "console", "open", "status", "power-status", "power-on", "power-off"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier
@@ -52,7 +52,7 @@ class Rackops:
         host = self._get_host()
         provider = self._get_provider(host)
 
-        getattr(provider, self.command)()
+        getattr(provider, self.command.replace("-", "_"))()
 
 class RackopsError(Exception):
     pass

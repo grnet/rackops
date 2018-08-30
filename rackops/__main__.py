@@ -75,6 +75,20 @@ def main():
         help="IPMI password",
         default=None
     )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Force",
+        default=None
+    )
+    parser.add_argument(
+        "-w",
+        "--wait",
+        action="store_true",
+        help="Wait",
+        default=None
+    )
     args = parser.parse_args()
 
     config = get_config(args.config)
@@ -95,6 +109,9 @@ def main():
         config["password"] = args.password
     elif args.password == True or not config.get("password", None):
         config["password"] = getpass("Please provide an IPMI password\n")
+
+    config['force'] = args.force
+    config['wait'] = args.wait
 
     rackops = Rackops(args.command, args.identifier, config)
     rackops.run()
