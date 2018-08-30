@@ -7,7 +7,8 @@ from rackops.providers.fujitsu import Fujitsu
 class Rackops:
     COMMANDS = ["info", "console", "open", "status",
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
-        "boot-pxe", "boot-local"]
+        "boot-pxe", "boot-local",
+        "ipmi-reset", "ipmi-logs"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier

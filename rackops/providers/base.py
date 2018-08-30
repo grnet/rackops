@@ -46,7 +46,7 @@ class ProviderBase(object):
         command = prefix + command
         try:
             if self.verbose:
-                print ("Exeucting:\n%s" % ' '.join(command))
+                print ("Executing:\n%s" % ' '.join(command))
             if output:
                 return check_output(command).decode('utf-8')
 
@@ -98,6 +98,18 @@ class ProviderBase(object):
 
     def boot_local(self):
         self._execute(['chassis', 'bootdev', 'disk'])
+
+    def ipmi_reset(self):
+        cmd = ['mc', 'reset']
+        if self.force:
+            cmd.append('cold')
+        else:
+            cmd.append('warm')
+
+        self._execute(cmd)
+
+    def ipmi_logs(self):
+        print(self._execute(['sel', 'list'], output=True).strip())
 
     def console(self):
         raise NotImplementedError("console not implemented in child class")
