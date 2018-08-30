@@ -23,8 +23,6 @@ class ProviderBase(object):
     def console(self):
         raise NotImplementedError("console not implemented in child class")
 
-    def shutdown(self):
-        raise NotImplementedError("shutdown not implemented in child class")
 
 
 class ProviderError(Exception):

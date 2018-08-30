@@ -101,5 +101,3 @@ class Lenovo(ProviderBase):
             sys.stderr.write("Couldn't open Java console. Exiting...\n")
             sys.exit(10)
 
-    def shutdown(self):
-        pass
