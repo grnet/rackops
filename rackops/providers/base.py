@@ -9,11 +9,14 @@ class ProviderBase(object):
     # All providers inherit this class
     # Defines the interface for providers
     # and implements basic functionality.
-    def __init__(self, command, host, username=None, password=None):
+    def __init__(self, command, host, username=None, password=None,
+        wait=False, force=False):
         self.command = command
         self.host = host
         self.username = username
         self.password = password
+        self.wait = wait
+        self.force = force
 
     def info(self):
         if getattr(self.host, "get_short_info", None):
@@ -71,14 +74,14 @@ class ProviderBase(object):
 
     def power_off(self):
         cmd = ['chassis', 'power']
-        if self.config.get('force', None):
+        if self.force:
             cmd.append('off')
         else:
             cmd.append('soft')
         self._execute(cmd)
-        if self.config.get('wait', None):
+        if self.wait:
             while (1):
-                if self._execute(['chassis', 'power', 'status'], output=True).contains('off'):
+                if 'off' in self._execute(['chassis', 'power', 'status'], output=True):
                     break
 
     def console(self):
