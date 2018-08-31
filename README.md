@@ -67,6 +67,7 @@ The non-required command line arguments are:
   for more details.
 - `-w`, `--wait`. Some commands can be run with this argument. See `Commands`
   for more details.
+- `-v`, `--verbose`. Print logs.
 
 
 As a module
@@ -74,7 +75,10 @@ As a module
 
 1. `from rackops.rackops import Rackops`
 2. `rackops = Rackops(command, identifier, config)`. `config` should be a hash
-   table with the values defined in the *Configuration* section.
+   table with the values defined in the *Configuration* section. If the command
+   executed is intended to run with the `--force`, `--wait` or `--verbose` options,
+   the `config` table should include the `force`, `wait` or `verbose` keys set
+   to `True` respectively.
 3. `rackops.run()`
 
 Commands
