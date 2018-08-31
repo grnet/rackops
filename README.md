@@ -63,6 +63,10 @@ The non-required command line arguments are:
 - `-u`, `--username`
 - `-p`, `--password`. With this argument if the password is not provided as a string,
     the user will be prompted for entering a password.
+- `-f`, `--force`. Some commands can be run with this argument. See `Commands`
+  for more details.
+- `-w`, `--wait`. Some commands can be run with this argument. See `Commands`
+  for more details.
 
 
 As a module
@@ -72,3 +76,24 @@ As a module
 2. `rackops = Rackops(command, identifier, config)`. `config` should be a hash
    table with the values defined in the *Configuration* section.
 3. `rackops.run()`
+
+Commands
+--------
+
+- `info`: Print information regarding the machine.
+- `console`: Opens a Java console on the remote machine.
+- `open`: Opens the IPMI host url on the client machine.
+- `status`: Prints information regarding the status of the remote machine.
+- `power-status`: Prints whether the machine is on/off.
+- `power-on`: Powers on the machine.
+- `power-off`: Sends a signal to the operating system for shutoff.
+    Can be run with the `--force` command line argument for a hard shutoff.
+    Can be run with the `--wait` argument to wait until the operating system
+    shutoff is complete before exiting.
+- `power-cycle`: Soft restart.
+- `power-reset`: Hard restart.
+- `boot-pxe`: Force pxe boot.
+- `boot-local`: Force boot from default harddrive.
+- `ipmi-reset`: Restart ipmi device. Can be run with the `--force` command line
+  argument for resetting the ipmi device.
+- `ipmi-logs`: Print system event logs.
