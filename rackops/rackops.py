@@ -45,9 +45,9 @@ class Rackops:
                 host,
                 username=self.config["username"],
                 password=self.config["password"],
-                verbose=self.config["verbose"],
-                force=self.config["force"],
-                wait=self.config["wait"]
+                verbose=self.config.get("verbose", False),
+                force=self.config.get("force", False),
+                wait=self.config.get("wait", False)
             )
         except KeyError:
             raise RackopsError("Not a valid provider")
