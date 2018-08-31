@@ -2,7 +2,7 @@ rackops is a tool for performing operations on rack operations.
 
 It currently supports Netbox hosts and the Lenovo, Fujitsu, Dell providers.
 
-To add a host or provider read CONTRIBUTING.md.
+To add a host or provider read [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 Installation
 ============
