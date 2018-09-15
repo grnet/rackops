@@ -25,7 +25,7 @@ class ProviderBase(object):
         else:
             info = self.host.get_info()
 
-        for key, val in info.iteritems():
+        for key, val in info.items():
             print (key.replace("_", " ").upper(), ": ", val)
 
     def open(self):

@@ -110,12 +110,12 @@ def main():
         config["username"] = args.username
 
     if not config.get("username", None):
-        config["username"] = raw_input("Please provide an IPMI username\n")
+        config["username"] = input("Please provide an IPMI username: ")
 
     if args.password and args.password != True:
         config["password"] = args.password
     elif args.password == True or not config.get("password", None):
-        config["password"] = getpass("Please provide an IPMI password\n")
+        config["password"] = getpass("Please provide an IPMI password: ")
 
     config['force'] = args.force
     config['wait'] = args.wait
