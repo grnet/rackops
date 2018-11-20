@@ -5,7 +5,10 @@ try:
 except ImportError:
     print ("setuptools not installed. run apt-get install python3-setuptools")
 
-from distutils.extension import Extension
+try:
+    from distutils.extension import Extension
+except ImportError:
+    print ("distutils not installed. run apt-get install python3-distutils")
 
 def get_long_desc():
     with open("README.md", "r") as readme:
