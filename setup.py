@@ -1,6 +1,10 @@
 import os
 
-from setuptools import setup, find_packages
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    print ("setuptools not installed. run apt-get install python3-setuptools")
+
 from distutils.extension import Extension
 
 def get_long_desc():
