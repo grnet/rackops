@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 
 from rackops.rackops import Rackops
 from getpass import getpass
@@ -15,9 +16,9 @@ def get_config(config_path):
 
     try:
         contents = json.loads(contents)
-    except ValueError as e:
-        print ("Configuration file %s doesn't contain valid JSON") % (config_path)
-        exit(1)
+    except json.decoder.JSONDecodeError as e:
+        print ("Configuration file {} doesn't contain valid JSON".format(config_path))
+        sys.exit(1)
 
     return contents
 
