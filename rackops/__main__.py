@@ -37,6 +37,8 @@ def set_environment_variables(config):
     if os.environ.get("RACKOPS_API_URL", None):
         config["api_url"] = os.environ["RACKOPS_API_URL"]
 
+    if os.environ.get("RACKOPS_NFS_SHARE", None):
+        config["nfs_share"] = os.environ["RACKOPS_NFS_SHARE"]
 
 def main():
     # 1. Configuration:
@@ -100,7 +102,6 @@ def main():
     args = parser.parse_args()
 
     config = get_config(args.config)
-
     # if no configuration file was found initialize an empty config
     if not config:
         config = {}

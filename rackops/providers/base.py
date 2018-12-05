@@ -10,7 +10,7 @@ class ProviderBase(object):
     # Defines the interface for providers
     # and implements basic functionality.
     def __init__(self, command, host, username=None, password=None,
-        verbose=False, wait=False, force=False):
+        verbose=False, wait=False, force=False, nfs_share=None):
         self.command = command
         self.host = host
         self.username = username
@@ -18,6 +18,7 @@ class ProviderBase(object):
         self.verbose = verbose
         self.wait = wait
         self.force = force
+        self.nfs_share = nfs_share
 
     def info(self):
         if getattr(self.host, "get_short_info", None):
@@ -114,6 +115,8 @@ class ProviderBase(object):
     def console(self):
         raise NotImplementedError("console not implemented in child class")
 
+    def diagnostics(self, nfs_share):
+        raise NotImplementedError("diagnostics command is not implemented in child process")
 
 class ProviderError(Exception):
     pass

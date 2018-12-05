@@ -8,7 +8,7 @@ class Rackops:
     COMMANDS = ["info", "console", "open", "status",
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
         "boot-pxe", "boot-local",
-        "ipmi-reset", "ipmi-logs"]
+        "ipmi-reset", "ipmi-logs", "diagnostics"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier
@@ -45,6 +45,7 @@ class Rackops:
                 host,
                 username=self.config["username"],
                 password=self.config["password"],
+                nfs_share=self.config["nfs_share"],
                 verbose=self.config.get("verbose", False),
                 force=self.config.get("force", False),
                 wait=self.config.get("wait", False)

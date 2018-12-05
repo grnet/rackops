@@ -37,6 +37,7 @@ def setup_package():
         install_requires=[
             'requests',
             'slimit',
+            'pexpect',
             'bs4',
             ],
 
