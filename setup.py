@@ -39,6 +39,7 @@ def setup_package():
             'slimit',
             'pexpect',
             'bs4',
+            'paramiko',
             ],
 
     )

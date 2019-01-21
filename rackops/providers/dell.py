@@ -1,7 +1,7 @@
 import re
 import sys
 import time
-import pexpect
+import paramiko
 
 from subprocess import Popen
 from rackops.providers.base import ProviderBase
@@ -21,35 +21,28 @@ class Dell(ProviderBase):
         # performs command using ssh
         # returns decoded output
 
-        host  = self.host.get_ipmi_host().replace("https://", "")
-        ssh_newkey = 'Are you sure you want to continue connecting'
-        prompt = 'ssh -o PubkeyAuthentication=no {}{}  {} '.format(self.username + "@", host, command)
+        nbytes = 4096
+        port = 22
+        hostname = self.host.get_ipmi_host().replace("https://", "")
+        username = self.username
+        password = self.password
 
-        # returns output
-        output = None
-        password_str = "password:"
-        expected = [ssh_newkey, password_str, pexpect.EOF]
-
-        try:
-            p = pexpect.spawn(prompt)
-            # loop through expected outputs
-            # till EOF is reached
-            while (1):
-                i = p.expect(expected)
-                if expected[i] == ssh_newkey:
-                    p.sendline('yes')
-                if expected[i] == password_str:
-                    p.sendline(self.password)
-                    output = p.read()
-                if expected[i] == pexpect.EOF:
-                    break
-        except pexpect.TIMEOUT:
-            print('Connection timeout while connecting to idrac')
-            sys.exit(10)
-
-        if not output:
-            print ("Cannot retrieve output. Exiting...")
-            sys.exit(10)
+        client = paramiko.Transport((hostname, port))
+        client.connect(username=username, password=password)
+        stdout_data = []
+        stderr_data = []
+        session = client.open_channel(kind='session')
+        session.exec_command(command)
+        while True:
+            if session.recv_ready():
+                stdout_data.append(session.recv(nbytes))
+            if session.recv_stderr_ready():
+                stderr_data.append(session.recv_stderr(nbytes))
+            if session.exit_status_ready():
+                break
+        output = b''.join(stdout_data)
+        session.close()
+        client.close()
 
         return output.decode("utf-8")
 

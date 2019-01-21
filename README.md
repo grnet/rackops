@@ -103,3 +103,5 @@ Commands
 - `ipmi-reset`: Restart ipmi device. Can be run with the `--force` command line
   argument for resetting the ipmi device.
 - `ipmi-logs`: Print system event logs.
+- diagnostics : Initiate diagnostics report on Dell ipmi and export it to an
+    nfs share
