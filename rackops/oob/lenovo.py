@@ -4,11 +4,11 @@ import slimit
 import requests
 import re
 
-from rackops.providers.base import ProviderBase
+from rackops.oob.base import OobBase
 from subprocess import Popen
 from slimit.visitors import nodevisitor
 
-class Lenovo(ProviderBase):
+class Lenovo(OobBase):
     def _get_console_cookies(self):
         return {'Cookie': 'Language=EN; SessionExpired=true;'}
 
@@ -47,7 +47,7 @@ class Lenovo(ProviderBase):
 
 
     def _connect(self):
-        ipmi_host = self.host.get_ipmi_host()
+        ipmi_host = self.dcim.get_ipmi_host()
         url = ipmi_host + self.URL_LOGIN
 
         cookies = self._get_console_cookies()
@@ -81,14 +81,14 @@ class Lenovo(ProviderBase):
     def console(self):
         self._connect()
 
-        ipmi_host = self.host.get_ipmi_host()
+        ipmi_host = self.dcim.get_ipmi_host()
         url = ipmi_host + self.URL_VNC.format(ipmi_host.replace("https://", ""))
         answer = self._post(url, None, self.session_token,
             self.CSRF_token).text
 
         _, myjviewer = tempfile.mkstemp()
         m = '\n<argument>-title</argument>\n<argument>{}</argument>'
-        m = m.format(self.host.identifier)
+        m = m.format(self.dcim.identifier)
         to_repl = '<argument>35</argument>'
         answer = answer.replace(to_repl, to_repl+m)
 

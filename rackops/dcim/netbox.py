@@ -2,9 +2,9 @@ import requests
 import json
 import sys
 
-from rackops.hosts.base import HostBase
+from rackops.dcim.base import DcimBase
 
-class Netbox(HostBase):
+class Netbox(DcimBase):
     def __init__(self, identifier, api_url):
         super(Netbox, self).__init__(identifier, api_url)
         self.info = self._retrieve_info()
@@ -25,7 +25,7 @@ class Netbox(HostBase):
         except requests.exceptions.Timeout as e:
             # useful instead of a long exception dump
             sys.stderr.write(
-                "Request timed out for **netbox** host %s. Exiting...\n" % url)
+                "Request timed out for **netbox** dcim %s. Exiting...\n" % url)
             exit(1)
 
     def _retrieve_info(self):
@@ -48,7 +48,7 @@ class Netbox(HostBase):
     def get_info(self):
         return self.info
 
-    def get_provider(self):
+    def get_oob(self):
         return self.info["results"][0]["device_type"]["manufacturer"]["slug"]
 
     def get_ipmi_host(self):

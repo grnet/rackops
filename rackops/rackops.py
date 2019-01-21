@@ -1,8 +1,8 @@
-from rackops.hosts.netbox import Netbox
+from rackops.dcim.netbox import Netbox
 
-from rackops.providers.lenovo import Lenovo
-from rackops.providers.dell import Dell
-from rackops.providers.fujitsu import Fujitsu
+from rackops.oob.lenovo import Lenovo
+from rackops.oob.dell import Dell
+from rackops.oob.fujitsu import Fujitsu
 
 class Rackops:
     COMMANDS = ["info", "console", "open", "status",
@@ -16,12 +16,12 @@ class Rackops:
         if command not in self.COMMANDS:
             raise RackopsError("Invalid command")
 
-    def _hosts_table(self):
+    def _dcim_table(self):
         return {
             'netbox': Netbox
         }
 
-    def _providers_table(self):
+    def _oobs_table(self):
         return {
             'lenovo': Lenovo,
             'dell': Dell,
@@ -29,20 +29,20 @@ class Rackops:
             'fujitsu': Fujitsu
         }
 
-    def _get_host(self):
-        host = self.config["host"].lower()
+    def _get_dcim(self):
+        dcim = self.config["dcim"].lower()
         api_url = self.config["api_url"]
         try:
-            return self._hosts_table()[host](self.identifier, api_url)
+            return self._dcim_table()[dcim](self.identifier, api_url)
         except KeyError:
-            raise RackopsError("Not a valid host")
+            raise RackopsError("Not a valid dcim")
 
-    def _get_provider(self, host):
-        provider = host.get_provider()
+    def _get_oob(self, dcim):
+        oob = dcim.get_oob()
         try:
-            return self._providers_table()[provider](
+            return self._oobs_table()[oob](
                 self.command,
-                host,
+                dcim,
                 username=self.config["username"],
                 password=self.config["password"],
                 nfs_share=self.config["nfs_share"],
@@ -52,15 +52,15 @@ class Rackops:
                 wait=self.config.get("wait", False)
             )
         except KeyError:
-            raise RackopsError("Not a valid provider")
+            raise RackopsError("Not a valid oob")
 
     def run(self):
         # Controller.
-        # Needs to find the correct host and the correct provider
-        host = self._get_host()
-        provider = self._get_provider(host)
+        # Needs to find the correct dcim and the correct oob
+        dcim = self._get_dcim()
+        oob = self._get_oob(dcim)
 
-        getattr(provider, self.command.replace("-", "_"))()
+        getattr(oob, self.command.replace("-", "_"))()
 
 class RackopsError(Exception):
     pass

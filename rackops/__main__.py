@@ -31,8 +31,8 @@ def set_environment_variables(config):
     if os.environ.get("RACKOPS_PASSWORD", None):
         config["password"] = os.environ["RACKOPS_PASSWORD"]
 
-    if os.environ.get("RACKOPS_HOST", None):
-        config["host"] = os.environ["RACKOPS_HOST"]
+    if os.environ.get("RACKOPS_DCIM", None):
+        config["dcim"] = os.environ["RACKOPS_DCIM"]
 
     if os.environ.get("RACKOPS_API_URL", None):
         config["api_url"] = os.environ["RACKOPS_API_URL"]

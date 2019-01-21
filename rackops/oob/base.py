@@ -2,17 +2,17 @@ import sys
 
 from subprocess import Popen, check_output, CalledProcessError, call
 
-class ProviderBase(object):
+class OobBase(object):
     URL_LOGIN = '/rpc/WEBSES/create.asp'
     URL_VNC = '/Java/jviewer.jnlp?EXTRNIP={}&JNLPSTR=JViewer'
 
-    # All providers inherit this class
-    # Defines the interface for providers
+    # All oobs inherit this class
+    # Defines the interface for oobs
     # and implements basic functionality.
-    def __init__(self, command, host, username=None, password=None,
+    def __init__(self, command, dcim, username=None, password=None,
         verbose=False, wait=False, force=False, http_share=None, nfs_share=None):
         self.command = command
-        self.host = host
+        self.dcim = dcim
         self.username = username
         self.password = password
         self.verbose = verbose
@@ -22,25 +22,25 @@ class ProviderBase(object):
         self.http_share = http_share
 
     def info(self):
-        if getattr(self.host, "get_short_info", None):
-            info = self.host.get_short_info()
+        if getattr(self.dcim, "get_short_info", None):
+            info = self.dcim.get_short_info()
         else:
-            info = self.host.get_info()
+            info = self.dcim.get_info()
 
         for key, val in info.items():
             print (key.replace("_", " ").upper(), ": ", val)
 
     def open(self):
         try:
-            Popen(['open', self.host.get_ipmi_host()])
+            Popen(['open', self.dcim.get_ipmi_host()])
         except:
             sys.stderr.write("Couldn't open browser. Exiting...\n")
             sys.exit(10)
 
     def _get_ipmi_tool_prefix(self):
-        host = self.host.get_ipmi_host().replace("https://", "")
+        dcim = self.dcim.get_ipmi_host().replace("https://", "")
         return ["ipmitool", "-U", self.username, "-P", self.password,
-            "-I", "lanplus", "-H", host]
+            "-I", "lanplus", "-H", dcim]
 
     # command is an array
     def _execute(self, command, output=False):
@@ -119,14 +119,14 @@ class ProviderBase(object):
     def diagnostics(self, nfs_share):
         raise NotImplementedError("diagnostics command is not implemented in child process")
 
-    def autoupdate(self, http_share):
+    def autoupdate(self):
         raise NotImplementedError("autoupdate command is not implemented in child process")
 
-    def upgrade(self, http_share):
+    def upgrade(self):
         raise NotImplementedError("upgrade command is not implemented in child process")
 
-    def idrac_info(self, http_share):
+    def idrac_info(self):
         raise NotImplementedError("idrac-info command is not implemented in child process")
 
-class ProviderError(Exception):
+class OobError(Exception):
     pass

@@ -1,6 +1,6 @@
-class HostBase(object):
-    # All hosts inherit this class
-    # Defines the interface for hosts
+class DcimBase(object):
+    # All dcims inherit this class
+    # Defines the interface for dcims
     # and implements basic functionality
     def __init__(self, identifier, api_url):
         self.identifier = identifier
@@ -12,5 +12,5 @@ class HostBase(object):
     def get_ipmi_host(self):
         raise NotImplementedError("get_ipmi_host not implemented")
 
-class HostError(Exception):
+class DcimError(Exception):
     pass

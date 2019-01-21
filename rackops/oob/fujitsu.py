@@ -14,15 +14,15 @@ import tempfile
 from bs4 import BeautifulSoup
 from subprocess import Popen
 
-from rackops.providers.base import ProviderBase
+from rackops.oob.base import OobBase
 
-class Fujitsu(ProviderBase):
+class Fujitsu(OobBase):
     def _get_realm(self):
         """does an unauthenticated request to get the real for auth afterwards."""
         opener = request.build_opener()
         request.install_opener(opener)
         try:
-            request.urlopen(self.host.get_ipmi_host())
+            request.urlopen(self.dcim.get_ipmi_host())
         #except Exception as err:
         except urlerror.HTTPError as err:
             header = err.headers.get('WWW-Authenticate')
@@ -34,7 +34,7 @@ class Fujitsu(ProviderBase):
         """setup digest auth"""
         realm = self._get_realm()
 
-        uri = self.host.get_ipmi_host()
+        uri = self.dcim.get_ipmi_host()
         username = self.username
         password = self.password
 
@@ -46,7 +46,7 @@ class Fujitsu(ProviderBase):
 
     def _find_avr_url(self):
         """Parse the main page to find the url for the jws"""
-        url = self.host.get_ipmi_host()
+        url = self.dcim.get_ipmi_host()
 
         req = request.Request(url)
         data = request.urlopen(req).read()

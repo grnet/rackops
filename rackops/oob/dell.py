@@ -4,11 +4,11 @@ import time
 import paramiko
 
 from subprocess import Popen
-from rackops.providers.base import ProviderBase
+from rackops.oob.base import OobBase
 
-class Dell(ProviderBase):
+class Dell(OobBase):
     def console(self):
-        ipmi_host = self.host.get_ipmi_host()
+        ipmi_host = self.dcim.get_ipmi_host()
         try:
             Popen(['moob', '-u', '{}'.format(self.username),
                   '-p', '{}'.format(self.password), '-m', ipmi_host.replace("https://", "")])
@@ -23,7 +23,7 @@ class Dell(ProviderBase):
 
         nbytes = 4096
         port = 22
-        hostname = self.host.get_ipmi_host().replace("https://", "")
+        hostname = self.dcim.get_ipmi_host().replace("https://", "")
         username = self.username
         password = self.password
 
@@ -75,7 +75,9 @@ class Dell(ProviderBase):
 
     def autoupdate(self):
         jobqueue_view = 'racadm jobqueue view -i {}'
-        schedule_updates = 'racadm autoupdatescheduler create -l {} -f grnet_1.00_Catalog.xml -a 0 -time 08:30 -dom * -wom * -dow * -rp 1'.format(self.http_share)
+        schedule_updates = ("racadm autoupdatescheduler create -l {} "
+                "-f grnet_1.00_Catalog.xml -a 0 -time 08:30"
+                "-dom * -wom * -dow * -rp 1").format(self.http_share)
         enable_updates = 'racadm set lifecycleController.lcattributes.AutoUpdate Enabled'
         enable_updates_output = self._ssh(enable_updates)
         schedule_updates_output = self._ssh(schedule_updates)
@@ -84,7 +86,7 @@ class Dell(ProviderBase):
 
     def upgrade(self):
         http_addr = self.http_share.strip('http:/')
-        upgrade ='racadm update -f grnet_1.00_Catalog.xml -e {} -t HTTP -a FALSE'.format(http_addr) 
+        upgrade = 'racadm update -f grnet_1.00_Catalog.xml -e {} -t HTTP -a FALSE'.format(http_addr)
         output = self._ssh(upgrade)
 
     def idrac_info(self):
