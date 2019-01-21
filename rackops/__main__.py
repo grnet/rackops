@@ -117,6 +117,9 @@ def main():
     if not config.get("username", None):
         config["username"] = input("Please provide an IPMI username: ")
 
+    if not config.get("dcim", None):
+        config["dcim"] = "netbox"
+
     if args.password and args.password != True:
         config["password"] = args.password
     elif args.password == True or not config.get("password", None):

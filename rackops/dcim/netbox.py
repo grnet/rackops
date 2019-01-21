@@ -1,6 +1,7 @@
 import requests
 import json
 import sys
+import os
 
 from rackops.dcim.base import DcimBase
 
@@ -16,7 +17,7 @@ class Netbox(DcimBase):
         return {"Accept": "application/json"}
 
     def _do_request(self):
-        url = self.api_url
+        url = os.path.join(self.api_url, "api/dcim/devices/")
         params = self._get_params()
         headers = self._get_headers()
 
