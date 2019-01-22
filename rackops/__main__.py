@@ -2,25 +2,24 @@ import argparse
 import json
 import os
 import sys
+import configparser
 
 from rackops.rackops import Rackops
 from getpass import getpass
 
 def get_config(config_path):
     try:
-        with open(os.path.abspath(config_path), "r") as f:
-            contents = f.read()
-    except (OSError, IOError) as e:
-        # no configuration file found
-        return None
-
-    try:
-        contents = json.loads(contents)
-    except json.decoder.JSONDecodeError as e:
-        print ("Configuration file {} doesn't contain valid JSON".format(config_path))
+        config = configparser.ConfigParser()
+        config.read(config_path)
+    except configparser.ParsingError as e:
+        print ("Invalid configuration file\n")
         sys.exit(1)
 
-    return contents
+    try:
+        return config['DEFAULT']
+    except:
+        print ("No DEFAULT section in configuration file\n")
+        sys.exit(1)
 
 def set_environment_variables(config):
     # Read environment variables regarding
@@ -44,6 +43,9 @@ def set_environment_variables(config):
         config["http_share"] = os.environ["RACKOPS_http_SHARE"]
 
 def main():
+    default_config_path = os.path.join(os.environ.get("HOME", "/"), ".config", "rackops")
+    if os.environ.get("XDG_CONFIG_HOME", None):
+        default_config_path = os.environ["XDG_CONFIG_HOME"]
     # 1. Configuration:
     #   - If config file exists, use it
     #   - Else if environment variables exist use those
@@ -57,7 +59,7 @@ def main():
         "--config",
         action="store",
         help="Configuration file path",
-        default=os.path.join(os.environ.get("HOME", "/"), ".rackopsrc")
+        default=default_config_path
     )
     parser.add_argument(
         "command",
