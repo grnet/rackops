@@ -15,29 +15,25 @@ def get_config(config_path):
         print ("Invalid configuration file\n")
         sys.exit(1)
 
-    try:
-        return config['DEFAULT']
-    except:
-        print ("No DEFAULT section in configuration file\n")
-        sys.exit(1)
+    return config
 
-def set_environment_variables(config):
+def get_environment_variables():
     # Read environment variables regarding
     # whatever the config file might include
+    env_vars = {}
     if os.environ.get("RACKOPS_USERNAME", None):
-        config["username"] = os.environ["RACKOPS_USERNAME"]
+        env_vars["username"] = os.environ["RACKOPS_USERNAME"]
 
     if os.environ.get("RACKOPS_PASSWORD", None):
-        config["password"] = os.environ["RACKOPS_PASSWORD"]
+        env_vars["password"] = os.environ["RACKOPS_PASSWORD"]
 
     if os.environ.get("RACKOPS_DCIM", None):
-        config["dcim"] = os.environ["RACKOPS_DCIM"]
-
-    if os.environ.get("RACKOPS_API_URL", None):
-        config["api_url"] = os.environ["RACKOPS_API_URL"]
+        env_vars["dcim"] = os.environ["RACKOPS_DCIM"]
 
     if os.environ.get("RACKOPS_NFS_SHARE", None):
-        config["nfs_share"] = os.environ["RACKOPS_NFS_SHARE"]
+        env_vars["nfs_share"] = os.environ["RACKOPS_NFS_SHARE"]
+
+    return env_vars
 
     if os.environ.get("RACKOPS_HTTP_SHARE", None):
         config["http_share"] = os.environ["RACKOPS_http_SHARE"]
@@ -55,19 +51,19 @@ def main():
     # 3. call rackops.run()
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-c",
-        "--config",
-        action="store",
-        help="Configuration file path",
-        default=default_config_path
-    )
-    parser.add_argument(
         "command",
         help="Command which will be executed"
     )
     parser.add_argument(
         "identifier",
         help="Identifier for the machine which the command will be executed"
+    )
+    parser.add_argument(
+        "-c",
+        "--config",
+        action="store",
+        help="Configuration file path",
+        default=default_config_path
     )
     parser.add_argument(
         "-u",
@@ -97,33 +93,18 @@ def main():
         help="Wait",
         default=None
     )
+    parser.add_argument(
+        "-d",
+        "--dcim",
+        help="DCIM name",
+        default="netbox"
+    )
     args = parser.parse_args()
 
     config = get_config(args.config)
-    # if no configuration file was found initialize an empty config
-    if not config:
-        config = {}
+    env_vars = get_environment_variables()
 
-    set_environment_variables(config)
-
-    if args.username:
-        config["username"] = args.username
-
-    if not config.get("username", None):
-        config["username"] = input("Please provide an IPMI username: ")
-
-    if not config.get("dcim", None):
-        config["dcim"] = "netbox"
-
-    if args.password and args.password != True:
-        config["password"] = args.password
-    elif args.password == True or not config.get("password", None):
-        config["password"] = getpass("Please provide an IPMI password: ")
-
-    config['force'] = args.force
-    config['wait'] = args.wait
-
-    rackops = Rackops(args.command, args.identifier, config)
+    rackops = Rackops(args.command, args.identifier, args, config, env_vars)
     rackops.run()
 
 if __name__ == "__main__":
