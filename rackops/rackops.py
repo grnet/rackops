@@ -47,7 +47,6 @@ class Rackops:
                 password=self.config["password"],
                 nfs_share=self.config["nfs_share"],
                 http_share=self.config["http_share"],
-                verbose=self.config.get("verbose", False),
                 force=self.config.get("force", False),
                 wait=self.config.get("wait", False)
             )

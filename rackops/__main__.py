@@ -97,13 +97,6 @@ def main():
         help="Wait",
         default=None
     )
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Verbose",
-        default=False
-    )
     args = parser.parse_args()
 
     config = get_config(args.config)
@@ -129,7 +122,6 @@ def main():
 
     config['force'] = args.force
     config['wait'] = args.wait
-    config['verbose'] = args.verbose
 
     rackops = Rackops(args.command, args.identifier, config)
     rackops.run()

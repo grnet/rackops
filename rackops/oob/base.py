@@ -10,12 +10,11 @@ class OobBase(object):
     # Defines the interface for oobs
     # and implements basic functionality.
     def __init__(self, command, dcim, username=None, password=None,
-        verbose=False, wait=False, force=False, http_share=None, nfs_share=None):
+        wait=False, force=False, http_share=None, nfs_share=None):
         self.command = command
         self.dcim = dcim
         self.username = username
         self.password = password
-        self.verbose = verbose
         self.wait = wait
         self.force = force
         self.nfs_share = nfs_share
@@ -47,8 +46,6 @@ class OobBase(object):
         prefix = self._get_ipmi_tool_prefix()
         command = prefix + command
         try:
-            if self.verbose:
-                print ("Executing:\n%s" % ' '.join(command))
             if output:
                 return check_output(command).decode('utf-8')
 
