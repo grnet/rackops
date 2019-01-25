@@ -32,8 +32,7 @@ def get_config(config_path):
         print ("Invalid configuration file\n")
         sys.exit(1)
 
-    print (format_config(config))
-    exit(1)
+    return format_config(config)
 
 def get_environment_variables():
     # Read environment variables regarding
@@ -75,6 +74,11 @@ def main():
     parser.add_argument(
         "identifier",
         help="Identifier for the machine which the command will be executed"
+    )
+    parser.add_argument(
+        "command_args",
+        help="Arguments of the command to be executed",
+        nargs='*'
     )
     parser.add_argument(
         "-c",
@@ -122,7 +126,7 @@ def main():
     config = get_config(args.config)
     env_vars = get_environment_variables()
 
-    rackops = Rackops(args.command, args.identifier, args, config, env_vars)
+    rackops = Rackops(args.command, args.identifier, args.command_args, args, config, env_vars)
     rackops.run()
 
 if __name__ == "__main__":

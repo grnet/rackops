@@ -9,10 +9,11 @@ class OobBase(object):
     # All oobs inherit this class
     # Defines the interface for oobs
     # and implements basic functionality.
-    def __init__(self, command, dcim, username=None, password=None,
+    def __init__(self, command, dcim, command_args, username=None, password=None,
         wait=False, force=False, http_share=None, nfs_share=None):
         self.command = command
         self.dcim = dcim
+        self.command_args = command_args
         self.username = username
         self.password = password
         self.wait = wait
@@ -28,6 +29,7 @@ class OobBase(object):
 
         for key, val in info.items():
             print (key.replace("_", " ").upper(), ": ", val)
+
 
     def open(self):
         try:
@@ -58,6 +60,22 @@ class OobBase(object):
             error = "Decoding the output of command %s failed with %s" % (' '.join(command), str(e))
             sys.stderr.write(error)
             sys.exit(10)
+
+    def identify(self):
+        if len(self.command_args) != 1:
+            print ("Wrong number of args")
+            sys.exit(1)
+
+        try:
+            blink = int(self.command_args[0])
+        except ValueError:
+            print ("Argument not an int")
+            sys.exit(1)
+
+        print (self._execute(
+            ['chassis', 'identify', self.command_args[0]],
+            output=True
+        ).strip())
 
     def status(self):
         print (self._execute(

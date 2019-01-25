@@ -12,7 +12,7 @@ class Rackops:
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
         "boot-pxe", "boot-local",
         "ipmi-reset", "ipmi-logs"]
-    def __init__(self, command, identifier, args, config, env_vars):
+    def __init__(self, command, identifier, command_args, args, config, env_vars):
         if command not in self.COMMANDS:
             raise RackopsError("Invalid command")
         self.command = command
@@ -20,6 +20,7 @@ class Rackops:
         self.args = args
         self.config = config
         self.env_vars = env_vars
+        self.command_args = command_args
 
     def _dcim_table(self):
         return {
@@ -82,6 +83,7 @@ class Rackops:
             return self._oobs_table()[oob](
                 self.command,
                 dcim,
+                self.command_args,
                 username=params["username"],
                 password=params["password"],
                 nfs_share=params["nfs_share"],
