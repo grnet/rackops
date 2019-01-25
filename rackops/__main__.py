@@ -7,6 +7,23 @@ import configparser
 from rackops.rackops import Rackops
 from getpass import getpass
 
+def format_config(config):
+    # Recursive function that converts a
+    # configparser.ConfigParser object into a dict
+    # Can't convert directly with dict(config)
+    # since dict(config) returns the dict in the form:
+    # {"section_1": "<Section1 Object>", "section_2": "<Section2 Object, ...}
+    # but using dict(config["section_1"]) we can see a valid dict representation
+    # of the specified section.
+    # so this basically recursivelly calls dict() on every subdict
+    keys = dict(config).keys()
+    formatted = {}
+    for k in keys:
+        formatted[k.lower()] = config[k]
+        if not type(config[k]) == str:
+            formatted[k.lower()] = format_config(config[k])
+    return formatted
+
 def get_config(config_path):
     try:
         config = configparser.ConfigParser()
@@ -15,7 +32,8 @@ def get_config(config_path):
         print ("Invalid configuration file\n")
         sys.exit(1)
 
-    return config
+    print (format_config(config))
+    exit(1)
 
 def get_environment_variables():
     # Read environment variables regarding

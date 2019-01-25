@@ -7,19 +7,19 @@ from rackops.oob.dell import Dell
 from rackops.oob.fujitsu import Fujitsu
 
 class Rackops:
-    COMMANDS = ["info", "console", "open", "status",
+    COMMANDS = ["info", "console", "open", "status", "ssh",
         "idrac-info", "autoupdate", "upgrade", "diagnostics"
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
         "boot-pxe", "boot-local",
         "ipmi-reset", "ipmi-logs"]
     def __init__(self, command, identifier, args, config, env_vars):
+        if command not in self.COMMANDS:
+            raise RackopsError("Invalid command")
         self.command = command
         self.identifier = identifier
         self.args = args
         self.config = config
         self.env_vars = env_vars
-        if command not in self.COMMANDS:
-            raise RackopsError("Invalid command")
 
     def _dcim_table(self):
         return {
@@ -34,27 +34,23 @@ class Rackops:
             'fujitsu': Fujitsu
         }
 
-    def _get_dcim_params(self):
-        dcim_section = self.config[self.args.dcim.upper()]
-        return {'api_url': dcim_section['api_url']}
-
     def _get_dcim(self):
-        params = self._get_dcim_params()
+        dcim_params = self.config[self.args.dcim.lower()]
         try:
-            return self._dcim_table()[self.args.dcim](self.identifier, params['api_url'])
+            return self._dcim_table()[self.args.dcim](self.identifier, dcim_params['api_url'])
         except KeyError:
             raise RackopsError("Not a valid dcim")
 
     def _get_oob_params(self, oob):
         config = {}
-        dcim_section = self.config[oob.upper()]
+        oob_params = self.config[oob.lower()]
         env_vars = self.env_vars
         if self.args.username:
             config['username'] = self.args.username
         elif env_vars.get('username', None):
             config['username'] = env_vars['username']
-        elif dcim_section.get('username', None):
-            config['username'] = dcim_section['username']
+        elif oob_params.get('username', None):
+            config['username'] = oob_params['username']
         else:
             config["username"] = input("Please provide an IPMI username: ")
 
@@ -62,13 +58,13 @@ class Rackops:
             config['password'] = self.args.password
         elif self.args.password:
             config["password"] = getpass("Please provide an IPMI password: ")
-        elif dcim_section.get('password', None):
-            config['password'] = dcim_section['password']
+        elif oob_params.get('password', None):
+            config['password'] = oob_params['password']
         else:
             config["password"] = getpass("Please provide an IPMI password: ")
 
         config['nfs_share'] = False
-        if dcim_section.get('nfs_share', None):
+        if oob_params.get('nfs_share', None) or env_vars.get('nfs_share', None):
             config['nfs_share'] = True
 
         config['http_share'] = False

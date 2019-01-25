@@ -71,6 +71,12 @@ class OobBase(object):
             output=True
         ).strip())
 
+    def power_status(self):
+        print (self._execute(
+            ['chassis', 'power', 'status'],
+            output=True
+        ).strip())
+
     def power_on(self):
         self._execute(['chassis', 'power', 'on'])
 
