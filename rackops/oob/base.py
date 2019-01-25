@@ -31,12 +31,31 @@ class OobBase(object):
             print (key.replace("_", " ").upper(), ": ", val)
 
 
-    def open(self):
+    def _execute_popen(self, command):
+        logging.info("Executing {}".format(" ".join(command))
         try:
-            Popen(['open', self.dcim.get_ipmi_host()])
+            Popen(command)
         except:
-            sys.stderr.write("Couldn't open browser. Exiting...\n")
-            sys.exit(10)
+            raise OobError("Couldn't open browser" \
+                "with command {}. Exiting...".format(" ".join(command))
+
+    def open(self):
+        self._execute_popen(['open', self.dcim.get_ipmi_host()])
+
+    def ssh(self):
+        status_command = ['chassis', 'power', 'status']
+        if self.wait:
+            if 'off' in self._execute(status_command, output=True):
+                logging.info("Waiting for machine to turn on...")
+
+            while (1):
+                if 'off' not in self._execute(status_command, output=True):
+                    break
+
+        host = self.dcim.get_asset_tag()
+        if not host:
+            raise OobError("Can't perform ssh without an asset tag")
+        call(['ssh', host])
 
     def _get_ipmi_tool_prefix(self):
         dcim = self.dcim.get_ipmi_host().replace("https://", "")

@@ -35,6 +35,14 @@ class Rackops:
             'fujitsu': Fujitsu
         }
 
+    def _config_table(self):
+        return {
+            'lenovo': 'lenovo',
+            'dell': 'dell',
+            'dell-inc': 'dell',
+            'fujitsu': 'fujitsu'
+        }
+
     def _get_dcim(self):
         dcim_params = self.config[self.args.dcim.lower()]
         try:
@@ -44,7 +52,11 @@ class Rackops:
 
     def _get_oob_params(self, oob):
         config = {}
-        oob_params = self.config[oob.lower()]
+        try:
+            oob_params = self.config[self._config_table()[oob.lower()]]
+        except KeyError:
+            raise RackopsError("Invalid oob name {}".format(oob))
+
         env_vars = self.env_vars
         if self.args.username:
             config['username'] = self.args.username

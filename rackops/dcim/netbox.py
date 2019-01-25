@@ -53,4 +53,13 @@ class Netbox(DcimBase):
         return self.info["results"][0]["device_type"]["manufacturer"]["slug"]
 
     def get_ipmi_host(self):
-        return self.info["results"][0]["custom_fields"]["IPMI"]
+        host = self.info["results"][0]["custom_fields"]["IPMI"]
+        if not host:
+            logging.warn("IPMI field not set on netbox")
+        return host
+
+    def get_asset_tag(self):
+        host = self.info["results"][0]["asset_tag"]
+        if not host:
+            logging.warn("IPMI field not set on netbox")
+        return host
