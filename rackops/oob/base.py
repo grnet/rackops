@@ -1,4 +1,5 @@
 import sys
+import logging
 
 from subprocess import Popen, check_output, CalledProcessError, call
 
@@ -21,23 +22,27 @@ class OobBase(object):
         self.nfs_share = nfs_share
         self.http_share = http_share
 
+    def _print(self, msg):
+        sys.stdout.write("{}\n".format(msg))
+
     def info(self):
+        logging.info("Executing info")
         if getattr(self.dcim, "get_short_info", None):
             info = self.dcim.get_short_info()
         else:
             info = self.dcim.get_info()
 
         for key, val in info.items():
-            print (key.replace("_", " ").upper(), ": ", val)
+            self._print("{}:{}".format(key.replace("_", " ").upper(), val))
 
 
     def _execute_popen(self, command):
-        logging.info("Executing {}".format(" ".join(command))
+        logging.info("Executing {}".format(" ".join(command)))
         try:
             Popen(command)
         except:
             raise OobError("Couldn't open browser" \
-                "with command {}. Exiting...".format(" ".join(command))
+                "with command {}. Exiting...".format(" ".join(command)))
 
     def open(self):
         self._execute_popen(['open', self.dcim.get_ipmi_host()])
@@ -66,6 +71,7 @@ class OobBase(object):
     def _execute(self, command, output=False):
         prefix = self._get_ipmi_tool_prefix()
         command = prefix + command
+        logging.info("Executing {}".format(" ".join(command)))
         try:
             if output:
                 return check_output(command).decode('utf-8')
@@ -73,43 +79,39 @@ class OobBase(object):
             call(command)
         except CalledProcessError as e:
             error = "Command %s failed with %s" % (' '.join(command), str(e))
-            sys.stderr.write(error)
-            sys.exit(10)
+            raise OobError(error)
         except UnicodeError as e:
             error = "Decoding the output of command %s failed with %s" % (' '.join(command), str(e))
-            sys.stderr.write(error)
-            sys.exit(10)
+            raise OobError(error)
 
     def identify(self):
         if len(self.command_args) != 1:
-            print ("Wrong number of args")
-            sys.exit(1)
+            raise OobError("Wrong number of args")
 
         try:
             blink = int(self.command_args[0])
         except ValueError:
-            print ("Argument not an int")
-            sys.exit(1)
+            raise OobError("Argument not an int")
 
-        print (self._execute(
+        self._print(self._execute(
             ['chassis', 'identify', self.command_args[0]],
             output=True
         ).strip())
 
     def status(self):
-        print (self._execute(
+        self._print(self._execute(
             ['chassis', 'status'],
             output=True
         ).strip())
 
     def power_status(self):
-        print (self._execute(
+        self._print(self._execute(
             ['chassis', 'power', 'status'],
             output=True
         ).strip())
 
     def power_status(self):
-        print (self._execute(
+        self._print(self._execute(
             ['chassis', 'power', 'status'],
             output=True
         ).strip())
@@ -151,7 +153,7 @@ class OobBase(object):
         self._execute(cmd)
 
     def ipmi_logs(self):
-        print(self._execute(['sel', 'list'], output=True).strip())
+        self._print(self._execute(['sel', 'list'], output=True).strip())
 
     def console(self):
         raise NotImplementedError("console not implemented in child class")

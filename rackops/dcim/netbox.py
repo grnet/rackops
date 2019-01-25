@@ -2,6 +2,7 @@ import requests
 import json
 import sys
 import os
+import logging
 
 from rackops.dcim.base import DcimBase
 
@@ -17,10 +18,15 @@ class Netbox(DcimBase):
         return {"Accept": "application/json"}
 
     def _do_request(self):
+        logging.info("Querying the Netbox API for serial {}".format(self.identifier))
         url = os.path.join(self.api_url, "api/dcim/devices/")
         params = self._get_params()
         headers = self._get_headers()
 
+        logging.debug("Will do a GET request on" \
+            "url {} with params {} and headers {}".format(
+                url, str(params), str(headers)
+            ))
         try:
             return requests.get(url, params=params, headers=headers)
         except requests.exceptions.Timeout as e:
@@ -30,8 +36,10 @@ class Netbox(DcimBase):
             exit(1)
 
     def _retrieve_info(self):
+        logging.info("Querying the Netbox API for serial {}".format(self.identifier))
         json_response = self._do_request()
 
+        logging.info("Decoding the response")
         # we expect the response to be a json object
         return json_response.json()
 

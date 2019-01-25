@@ -1,3 +1,5 @@
+import logging
+
 from getpass import getpass
 
 from rackops.dcim.netbox import Netbox
@@ -109,10 +111,15 @@ class Rackops:
     def run(self):
         # Controller.
         # Needs to find the correct dcim and the correct oob
+        logging.info("Initiating DCIM object")
         dcim = self._get_dcim()
+        logging.info("Initiating OOB object")
         oob = self._get_oob(dcim)
 
-        getattr(oob, self.command.replace("-", "_"))()
+        command = self.command.replace("-", "_")
+        logging.info("Executing command {}".format(command))
+        getattr(oob, command)()
+        logging.info("Done")
 
 class RackopsError(Exception):
     pass

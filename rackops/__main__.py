@@ -3,9 +3,19 @@ import json
 import os
 import sys
 import configparser
+import logging
 
 from rackops.rackops import Rackops
 from getpass import getpass
+
+def setup_logging(verbosity):
+    level_list = [logging.WARN, logging.INFO, logging.DEBUG]
+    if len(level_list) < verbosity - 1:
+        print ("Invalid verbosity")
+        sys.exit(1)
+
+    level = level_list[verbosity]
+    logging.basicConfig(level=level)
 
 def format_config(config):
     # Recursive function that converts a
@@ -121,8 +131,16 @@ def main():
         help="DCIM name",
         default="netbox"
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="Sets logging to INFO for -v and DEBUG for -vv",
+        action="count",
+        default=0
+    )
     args = parser.parse_args()
 
+    setup_logging(args.verbose)
     config = get_config(args.config)
     env_vars = get_environment_variables()
 
