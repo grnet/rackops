@@ -44,8 +44,7 @@ class Netbox(DcimBase):
         return json_response.json()
 
 
-    def get_short_info(self):
-        result = self.info["results"][0]
+    def get_short_info(self, result):
         return {
             "name": result["name"],
             "display_name": result["display_name"],
@@ -57,17 +56,12 @@ class Netbox(DcimBase):
     def get_info(self):
         return self.info
 
-    def get_oob(self):
-        return self.info["results"][0]["device_type"]["manufacturer"]["slug"]
-
-    def get_ipmi_host(self):
-        host = self.info["results"][0]["custom_fields"]["IPMI"]
-        if not host:
-            logging.warn("IPMI field not set on netbox")
-        return host
-
-    def get_asset_tag(self):
-        host = self.info["results"][0]["asset_tag"]
-        if not host:
-            logging.warn("IPMI field not set on netbox")
-        return host
+    def get_oobs(self):
+        for result in self.info["results"]:
+            yield {
+                "asset_tag": result["asset_tag"],
+                "ipmi": result["custom_fields"]["IPMI"],
+                "oob": result["device_type"]["manufacturer"]["slug"],
+                "info": self.get_short_info(result),
+                "identifier": result["name"]
+            }

@@ -90,35 +90,36 @@ class Rackops:
 
         return config
 
-    def _get_oob(self, dcim):
-        oob = dcim.get_oob()
-        params = self._get_oob_params(oob)
-        try:
-            return self._oobs_table()[oob](
-                self.command,
-                dcim,
-                self.command_args,
-                username=params["username"],
-                password=params["password"],
-                nfs_share=params["nfs_share"],
-                http_share=params["http_share"],
-                force=self.args.force,
-                wait=self.args.wait
-            )
-        except KeyError:
-            raise RackopsError("Not a valid oob")
+    def _execute_command(self, dcim):
+        for oob_info in dcim.get_oobs():
+            oob = oob_info["oob"]
+            params = self._get_oob_params(oob)
+            logging.info("Initiating OOB object for oob {}".format(oob))
+            try:
+                oob_obj = self._oobs_table()[oob](
+                    self.command,
+                    oob_info,
+                    self.command_args,
+                    username=params["username"],
+                    password=params["password"],
+                    nfs_share=params["nfs_share"],
+                    http_share=params["http_share"],
+                    force=self.args.force,
+                    wait=self.args.wait
+                )
+            except KeyError:
+                raise RackopsError("Not a valid oob {}".format(oob))
+            command = self.command.replace("-", "_")
+            logging.info("Executing command {} on oob {}".format(command, oob))
+            getattr(oob_obj, command)()
 
     def run(self):
         # Controller.
         # Needs to find the correct dcim and the correct oob
         logging.info("Initiating DCIM object")
         dcim = self._get_dcim()
-        logging.info("Initiating OOB object")
-        oob = self._get_oob(dcim)
-
-        command = self.command.replace("-", "_")
-        logging.info("Executing command {}".format(command))
-        getattr(oob, command)()
+        logging.info("Executing command")
+        self._execute_command(dcim)
         logging.info("Done")
 
 class RackopsError(Exception):

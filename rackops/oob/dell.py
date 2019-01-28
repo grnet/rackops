@@ -8,7 +8,7 @@ from rackops.oob.base import OobBase
 
 class Dell(OobBase):
     def console(self):
-        ipmi_host = self.dcim.get_ipmi_host()
+        ipmi_host = self.oob_info["ipmi"]
         try:
             Popen(['moob', '-u', '{}'.format(self.username),
                   '-p', '{}'.format(self.password), '-m', ipmi_host.replace("https://", "")])
@@ -23,7 +23,7 @@ class Dell(OobBase):
 
         nbytes = 4096
         port = 22
-        hostname = self.dcim.get_ipmi_host().replace("https://", "")
+        hostname = self.oob_info["ipmi"].replace("https://", "")
         username = self.username
         password = self.password
 

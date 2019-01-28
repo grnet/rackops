@@ -81,14 +81,14 @@ class Lenovo(OobBase):
     def console(self):
         self._connect()
 
-        ipmi_host = self.dcim.get_ipmi_host()
+        ipmi_host = self.oob_info["ipmi"]
         url = ipmi_host + self.URL_VNC.format(ipmi_host.replace("https://", ""))
         answer = self._post(url, None, self.session_token,
             self.CSRF_token).text
 
         _, myjviewer = tempfile.mkstemp()
         m = '\n<argument>-title</argument>\n<argument>{}</argument>'
-        m = m.format(self.dcim.identifier)
+        m = m.format(self.oob_info["identifier"])
         to_repl = '<argument>35</argument>'
         answer = answer.replace(to_repl, to_repl+m)
 

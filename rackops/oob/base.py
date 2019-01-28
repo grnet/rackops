@@ -10,10 +10,10 @@ class OobBase(object):
     # All oobs inherit this class
     # Defines the interface for oobs
     # and implements basic functionality.
-    def __init__(self, command, dcim, command_args, username=None, password=None,
+    def __init__(self, command, oob_info, command_args, username=None, password=None,
         wait=False, force=False, http_share=None, nfs_share=None):
         self.command = command
-        self.dcim = dcim
+        self.oob_info = oob_info
         self.command_args = command_args
         self.username = username
         self.password = password
@@ -27,10 +27,7 @@ class OobBase(object):
 
     def info(self):
         logging.info("Executing info")
-        if getattr(self.dcim, "get_short_info", None):
-            info = self.dcim.get_short_info()
-        else:
-            info = self.dcim.get_info()
+        info = self.oob_info["info"]
 
         for key, val in info.items():
             self._print("{}:{}".format(key.replace("_", " ").upper(), val))
@@ -45,7 +42,7 @@ class OobBase(object):
                 "with command {}. Exiting...".format(" ".join(command)))
 
     def open(self):
-        self._execute_popen(['open', self.dcim.get_ipmi_host()])
+        self._execute_popen(['open', self.oob_info["ipmi"]])
 
     def ssh(self):
         status_command = ['chassis', 'power', 'status']
@@ -57,15 +54,15 @@ class OobBase(object):
                 if 'off' not in self._execute(status_command, output=True):
                     break
 
-        host = self.dcim.get_asset_tag()
+        host = self.oob_info["asset_tag"]
         if not host:
             raise OobError("Can't perform ssh without an asset tag")
         call(['ssh', host])
 
     def _get_ipmi_tool_prefix(self):
-        dcim = self.dcim.get_ipmi_host().replace("https://", "")
+        host = self.oob_info["ipmi"].replace("https://", "")
         return ["ipmitool", "-U", self.username, "-P", self.password,
-            "-I", "lanplus", "-H", dcim]
+            "-I", "lanplus", "-H", host]
 
     # command is an array
     def _execute(self, command, output=False):

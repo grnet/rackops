@@ -22,7 +22,7 @@ class Fujitsu(OobBase):
         opener = request.build_opener()
         request.install_opener(opener)
         try:
-            request.urlopen(self.dcim.get_ipmi_host())
+            request.urlopen(self.oob_info["ipmi"])
         #except Exception as err:
         except urlerror.HTTPError as err:
             header = err.headers.get('WWW-Authenticate')
@@ -34,7 +34,7 @@ class Fujitsu(OobBase):
         """setup digest auth"""
         realm = self._get_realm()
 
-        uri = self.dcim.get_ipmi_host()
+        uri = self.oob_info["ipmi"]
         username = self.username
         password = self.password
 
@@ -46,7 +46,7 @@ class Fujitsu(OobBase):
 
     def _find_avr_url(self):
         """Parse the main page to find the url for the jws"""
-        url = self.dcim.get_ipmi_host()
+        url = self.oob_info["ipmi"]
 
         req = request.Request(url)
         data = request.urlopen(req).read()

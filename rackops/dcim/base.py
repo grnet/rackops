@@ -9,11 +9,8 @@ class DcimBase(object):
     def get_info(self):
         raise NotImplementedError("get_info not implemented")
 
-    def get_ipmi_host(self):
-        raise NotImplementedError("get_ipmi_host not implemented")
-
-    def get_asset_tag(self):
-        raise NotImplementedError("get_asset_tag not implemented")
+    def get_oobs(self):
+        raise NotImplementedError("get_oobs not implemented")
 
 class DcimError(Exception):
     pass
