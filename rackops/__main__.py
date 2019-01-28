@@ -83,7 +83,8 @@ def main():
     )
     parser.add_argument(
         "identifier",
-        help="Identifier for the machine which the command will be executed"
+        help="Identifier for the machine which the command will be executed",
+        default=None
     )
     parser.add_argument(
         "command_args",
@@ -132,6 +133,27 @@ def main():
         default="netbox"
     )
     parser.add_argument(
+        "-r",
+        "--rack",
+        help="Rack name",
+        action="store_true",
+        default=False
+    )
+    parser.add_argument(
+        "-a",
+        "--rack-unit",
+        help="Rack unit",
+        action="store_true",
+        default=False
+    )
+    parser.add_argument(
+        "-s",
+        "--serial",
+        help="Serial name",
+        action="store_true",
+        default=False
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         help="Sets logging to INFO for -v and DEBUG for -vv",
@@ -140,11 +162,15 @@ def main():
     )
     args = parser.parse_args()
 
+    if len([x for x in [args.serial, args.rack, args.rack_unit] if x]) > 1:
+        print ("Can't use rack, rack unit and serial flags concurrently")
+        sys.exit(1)
+
     setup_logging(args.verbose)
     config = get_config(args.config)
     env_vars = get_environment_variables()
 
-    rackops = Rackops(args.command, args.identifier, args.command_args, args, config, env_vars)
+    rackops = Rackops(args.command, args.identifier, args.rack, args.rack_unit, args.serial, args.command_args, args, config, env_vars)
     rackops.run()
 
 if __name__ == "__main__":

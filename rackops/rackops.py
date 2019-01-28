@@ -10,15 +10,18 @@ from rackops.oob.fujitsu import Fujitsu
 
 class Rackops:
     COMMANDS = ["info", "console", "open", "status", "ssh",
-        "idrac-info", "autoupdate", "upgrade", "diagnostics"
+        "idrac-info", "autoupdate", "upgrade", "diagnostics",
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
         "boot-pxe", "boot-local",
         "ipmi-reset", "ipmi-logs"]
-    def __init__(self, command, identifier, command_args, args, config, env_vars):
+    def __init__(self, command, identifier, rack, rack_unit, serial, command_args, args, config, env_vars):
         if command not in self.COMMANDS:
             raise RackopsError("Invalid command")
         self.command = command
         self.identifier = identifier
+        self.rack = rack
+        self.rack_unit = rack_unit
+        self.serial = serial
         self.args = args
         self.config = config
         self.env_vars = env_vars
@@ -46,9 +49,10 @@ class Rackops:
         }
 
     def _get_dcim(self):
-        dcim_params = self.config[self.args.dcim.lower()]
+        dcim = self.args.dcim.lower()
+        dcim_params = self.config[dcim]
         try:
-            return self._dcim_table()[self.args.dcim](self.identifier, dcim_params['api_url'])
+            return self._dcim_table()[dcim](self.identifier, self.rack, self.rack_unit, self.serial, dcim_params['api_url'])
         except KeyError:
             raise RackopsError("Not a valid dcim")
 
@@ -84,9 +88,9 @@ class Rackops:
 
         config['http_share'] = False
         if env_vars.get('http_share', None):
-            config['http_share'] =env_vars['http_share']
-        elif dcim_section.get('http_share', None):
-            config['http_share'] = dcim_section['http_share']
+            config['http_share'] = env_vars['http_share']
+        elif oob_params.get('http_share', None):
+            config['http_share'] = oob_params['http_share']
 
         return config
 
