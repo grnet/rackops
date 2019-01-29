@@ -23,7 +23,7 @@ class OobBase(object):
         self.http_share = http_share
 
     def _print(self, msg):
-        sys.stdout.write("{}\n".format(msg))
+        sys.stdout.write("{}:\n{}\n".format(self.oob_info["identifier"], msg))
 
     def info(self):
         logging.info("Executing info")
