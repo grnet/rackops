@@ -66,6 +66,10 @@ class OobBase(object):
 
     # command is an array
     def _execute(self, command, output=False):
+        if not self.oob_info["ipmi"]:
+            logging.warn("oob {} doesn't contain an IPMI field".format(self.oob_info["oob"]))
+            return ""
+
         prefix = self._get_ipmi_tool_prefix()
         command = prefix + command
         logging.info("Executing {}".format(" ".join(command)))
