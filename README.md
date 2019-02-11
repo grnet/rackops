@@ -16,28 +16,44 @@ Configuration
 =============
 
 rackops uses a JSON configuration file.
-It defaults to `~/.rackopsrc`, but a different configuration file
-can be used using the `-c` command line argument.
+It defaults to `~/.config/rackops` or `$XDG_CONFIG_HOME/rackops` if
+the environment variable `$XDG_CONFIG_HOME` is set,
+but a different configuration file can be used
+using the `-c` command line argument.
+
+We use the [configparser](https://docs.python.org/3/library/configparser.html)
+module for configuration parsing.
 
 The configuration file should have this form:
 ```
-{
-    "host": <host>,
-    "api_url": <api_url>,
-    "username": <urername>,
-    "password": <password>
-    "nfs_share": "IP:/path/",
-    "http_share": "http://IP/path/"
-}
+[<DCIM1>]
+api_url = <api_url1>
+
+[<DCIM2>]
+api_url = <api_url2>
+
+[<OOB1>]
+username = <oob1_username>
+password = <oob1_password>
+nfs_share = "IP:/path/"
+http_share = "http://IP/path/"
+
+[<OOB2>]
+=====
+username = <oob2_username>
+password = <oob2_password>
+nfs_share = "IP:/path/"
+http_share = "http://IP/path/"
 ```
 
 where:
-- `host` is the name of your host. Currently `host` can only be `"netbox"`.
-- `api_url` is the URL of your host's API (i.e.
-  https://netbox.noc.grnet.gr/api/dcim/devices/)
-- `username` is the username that will be used while connecting to a provider,
+- `<DCIM>` is the name of a dcim. Currently we only support the `netbox` dcim.
+- `<api_url>` is the API URL of the specified DCIM.
+  (i.e https://netbox.noc.grnet.gr/api/)
+- `<OOB>` is the name of an oob (i.e. lenovo)
+- `<username>` is the username associated with a specific oob.
   while
-- `password` is the password that will be used
+- `<password>` is the password that will be used for a specific oob.
 - `nfs_share` is the nfs share where diagnostics from Dell hosts are uploaded,
 - `http_share` is an http share where Dell hosts retrieve idrac updates from,
 
@@ -46,8 +62,6 @@ those from the configuration file. The environment variables supported are:
 
 - `RACKOPS_USERNAME`
 - `RACKOPS_PASSWORD`
-- `RACKOPS_HOST`
-- `RACKOPS_API_URL`
 
 If command line arguments for the username and password are defined, they will overwrite
 those from the configuration file and the environment variables.
@@ -65,6 +79,11 @@ CLI
 
 The non-required command line arguments are:
 
+- `-d`, `--dcim`. Name of the DCIM to be used. Defaults to `netbox`.
+- `-r`, `--rack`. The identifier provided is an identifier for a rack.
+- `-a`, `--rack-unit`. The identifier provided is an identifier for a rack
+  unit.
+- `-s`, `--serial`. The identifier provided is an identifier for a serial.
 - `-c`,`--config`. The location of the configuration file.
 - `-u`, `--username`
 - `-p`, `--password`. With this argument if the password is not provided as a string,
@@ -73,18 +92,23 @@ The non-required command line arguments are:
   for more details.
 - `-w`, `--wait`. Some commands can be run with this argument. See `Commands`
   for more details.
-- `-v`, `--verbose`. Print logs.
+- `-v`, `--verbose`. Set log level to INFO, and DEBUG for `-vv`.
 
 
 As a module
 -----------
 
 1. `from rackops.rackops import Rackops`
-2. `rackops = Rackops(command, identifier, config)`. `config` should be a hash
-   table with the values defined in the *Configuration* section. If the command
-   executed is intended to run with the `--force`, `--wait` or `--verbose` options,
-   the `config` table should include the `force`, `wait` or `verbose` keys set
-   to `True` respectively.
+2. `rackops = Rackops(command, identifier, is_rack, is_rack_unit, is_serial,
+   command_args, args, config, environment_variables)`. `config` should be a hash
+   table with the values defined in the *Configuration* section.
+   `args` should be a hash map containing the command line arguments specified
+   above as keys (i.e. {"wait": True})
+   `is_rack`, `is_rack_unit`, `is_serial` are boolean values specifying if the
+   identifier corresponds to a rack, rack unit or serial respectivelly.
+   `command_args` is a list containing arguments for the command to be run.
+   `environment_variables` is a hash map containing the environment variables
+   specified above.
 3. `rackops.run()`
 
 Commands
