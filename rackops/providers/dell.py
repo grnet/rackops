@@ -68,8 +68,27 @@ class Dell(ProviderBase):
         time.sleep(180) # wait 3 minutes to collect the TSR report
         view_output = self._ssh(jobqueue_view.format(jid))
         self._confirm_job(view_output)
-
         output = self._ssh('racadm techsupreport export -l {}'.format(self.nfs_share))
         jid = self._find_jid(output)
         view_output = self._ssh(jobqueue_view.format(jid))
         self._confirm_job(view_output)
+
+    def autoupdate(self):
+        jobqueue_view = 'racadm jobqueue view -i {}'
+        schedule_updates = 'racadm autoupdatescheduler create -l {} -f grnet_1.00_Catalog.xml -a 0 -time 08:30 -dom * -wom * -dow * -rp 1'.format(self.http_share)
+        enable_updates = 'racadm set lifecycleController.lcattributes.AutoUpdate Enabled'
+        enable_updates_output = self._ssh(enable_updates)
+        schedule_updates_output = self._ssh(schedule_updates)
+        print(enable_updates_output)
+        print(schedule_updates_output)
+
+    def upgrade(self):
+        http_addr = self.http_share.strip('http:/')
+        upgrade ='racadm update -f grnet_1.00_Catalog.xml -e {} -t HTTP -a FALSE'.format(http_addr) 
+        output = self._ssh(upgrade)
+
+    def idrac_info(self):
+        firm_info = 'racadm get idrac.info'
+        bios_info = 'racadm get bios.sysinformation'
+        print(self._ssh(firm_info))
+        print(self._ssh(bios_info))

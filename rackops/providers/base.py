@@ -10,7 +10,7 @@ class ProviderBase(object):
     # Defines the interface for providers
     # and implements basic functionality.
     def __init__(self, command, host, username=None, password=None,
-        verbose=False, wait=False, force=False, nfs_share=None):
+        verbose=False, wait=False, force=False, http_share=None, nfs_share=None):
         self.command = command
         self.host = host
         self.username = username
@@ -19,6 +19,7 @@ class ProviderBase(object):
         self.wait = wait
         self.force = force
         self.nfs_share = nfs_share
+        self.http_share = http_share
 
     def info(self):
         if getattr(self.host, "get_short_info", None):
@@ -117,6 +118,15 @@ class ProviderBase(object):
 
     def diagnostics(self, nfs_share):
         raise NotImplementedError("diagnostics command is not implemented in child process")
+
+    def autoupdate(self, http_share):
+        raise NotImplementedError("autoupdate command is not implemented in child process")
+
+    def upgrade(self, http_share):
+        raise NotImplementedError("upgrade command is not implemented in child process")
+
+    def idrac_info(self, http_share):
+        raise NotImplementedError("idrac-info command is not implemented in child process")
 
 class ProviderError(Exception):
     pass

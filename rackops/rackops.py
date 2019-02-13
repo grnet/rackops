@@ -7,8 +7,8 @@ from rackops.providers.fujitsu import Fujitsu
 class Rackops:
     COMMANDS = ["info", "console", "open", "status",
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
-        "boot-pxe", "boot-local",
-        "ipmi-reset", "ipmi-logs", "diagnostics"]
+        "boot-pxe", "boot-local", "ipmi-reset", "ipmi-logs",
+        "idrac-info", "autoupdate", "upgrade", "diagnostics"]
     def __init__(self, command, identifier, config):
         self.command = command
         self.identifier = identifier
@@ -46,6 +46,7 @@ class Rackops:
                 username=self.config["username"],
                 password=self.config["password"],
                 nfs_share=self.config["nfs_share"],
+                http_share=self.config["http_share"],
                 verbose=self.config.get("verbose", False),
                 force=self.config.get("force", False),
                 wait=self.config.get("wait", False)

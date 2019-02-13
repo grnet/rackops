@@ -26,6 +26,8 @@ The configuration file should have this form:
     "api_url": <api_url>,
     "username": <urername>,
     "password": <password>
+    "nfs_share": "IP:/path/",
+    "http_share": "http://IP/path/"
 }
 ```
 
@@ -36,6 +38,8 @@ where:
 - `username` is the username that will be used while connecting to a provider,
   while
 - `password` is the password that will be used
+- `nfs_share` is the nfs share where diagnostics from Dell hosts are uploaded,
+- `http_share` is an http share where Dell hosts retrieve idrac updates from,
 
 If environment variables for the above values are defined, they will overwrite
 those from the configuration file. The environment variables supported are:
@@ -103,5 +107,8 @@ Commands
 - `ipmi-reset`: Restart ipmi device. Can be run with the `--force` command line
   argument for resetting the ipmi device.
 - `ipmi-logs`: Print system event logs.
-- diagnostics : Initiate diagnostics report on Dell ipmi and export it to an
+- `diagnostics` : Initiate diagnostics report on Dell ipmi and export it to an
     nfs share
+- `autoupdate`: Schedule auto updates on a Dell host every day at 08:30
+- `upgrade`: Instantly update an iDrac's firmware from an http share
+- `idrac-info`: Receive BIOS version and controller info from an iDrac

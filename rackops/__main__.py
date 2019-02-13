@@ -40,6 +40,9 @@ def set_environment_variables(config):
     if os.environ.get("RACKOPS_NFS_SHARE", None):
         config["nfs_share"] = os.environ["RACKOPS_NFS_SHARE"]
 
+    if os.environ.get("RACKOPS_HTTP_SHARE", None):
+        config["http_share"] = os.environ["RACKOPS_http_SHARE"]
+
 def main():
     # 1. Configuration:
     #   - If config file exists, use it
