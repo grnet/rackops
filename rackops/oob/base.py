@@ -159,7 +159,7 @@ class OobBase(object):
     def console(self):
         raise NotImplementedError("console not implemented in child class")
 
-    def diagnostics(self, nfs_share):
+    def diagnostics(self):
         raise NotImplementedError("diagnostics command is not implemented in child process")
 
     def autoupdate(self):
