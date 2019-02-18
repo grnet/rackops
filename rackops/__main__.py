@@ -39,7 +39,7 @@ def get_config(config_path):
         config = configparser.ConfigParser()
         config.read(config_path)
     except configparser.ParsingError as e:
-        print ("Invalid configuration file\n")
+        print ("Invalid configuration file")
         sys.exit(1)
 
     return format_config(config)
@@ -54,16 +54,13 @@ def get_environment_variables():
     if os.environ.get("RACKOPS_PASSWORD", None):
         env_vars["password"] = os.environ["RACKOPS_PASSWORD"]
 
-    if os.environ.get("RACKOPS_DCIM", None):
-        env_vars["dcim"] = os.environ["RACKOPS_DCIM"]
-
     if os.environ.get("RACKOPS_NFS_SHARE", None):
         env_vars["nfs_share"] = os.environ["RACKOPS_NFS_SHARE"]
 
-    return env_vars
-
     if os.environ.get("RACKOPS_HTTP_SHARE", None):
         config["http_share"] = os.environ["RACKOPS_http_SHARE"]
+
+    return env_vars
 
 def main():
     default_config_path = os.path.join(os.environ.get("HOME", "/"), ".config", "rackops")
