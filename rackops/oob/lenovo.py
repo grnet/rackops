@@ -47,7 +47,7 @@ class Lenovo(OobBase):
 
 
     def _connect(self):
-        ipmi_host = self.dcim.get_ipmi_host()
+        ipmi_host = self.oob_info["ipmi"]
         url = ipmi_host + self.URL_LOGIN
 
         cookies = self._get_console_cookies()
