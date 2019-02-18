@@ -9,7 +9,7 @@ Installation
 
 1. Clone the repository.
 2. `apt-get install python3-setuptools python3-requests python3-bs4
-   python3-slimit python3-distutils python3-paramiko python3-paramiko
+   python3-slimit python3-distutils python3-paramiko
    libcurl4-openssl-dev`
 3. On the root directory perform `sudo python3 setup.py install`
 
