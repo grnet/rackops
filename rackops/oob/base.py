@@ -29,8 +29,11 @@ class OobBase(object):
         logging.info("Executing info")
         info = self.oob_info["info"]
 
+        info_str = ""
         for key, val in info.items():
-            self._print("{}:{}".format(key.replace("_", " ").upper(), val))
+            info_str += ("{}:{}\n".format(key.replace("_", " ").upper(), val))
+
+        self._print(info_str[:-1])
 
 
     def _execute_popen(self, command):
