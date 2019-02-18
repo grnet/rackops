@@ -9,8 +9,9 @@ Installation
 
 1. Clone the repository.
 2. `apt-get install python3-setuptools python3-requests python3-bs4
-   python3-slimit python3-distutils`
-3. On the root directory perform `python3 setup.py install`
+   python3-slimit python3-distutils python3-paramiko python3-paramiko
+   libcurl4-openssl-dev`
+3. On the root directory perform `sudo python3 setup.py install`
 
 Configuration
 =============
@@ -39,7 +40,6 @@ nfs_share = "IP:/path/"
 http_share = "http://IP/path/"
 
 [<OOB2>]
-=====
 username = <oob2_username>
 password = <oob2_password>
 nfs_share = "IP:/path/"
@@ -49,7 +49,7 @@ http_share = "http://IP/path/"
 where:
 - `<DCIM>` is the name of a dcim. Currently we only support the `netbox` dcim.
 - `<api_url>` is the API URL of the specified DCIM.
-  (i.e https://netbox.noc.grnet.gr/api/)
+  (i.e https://netbox.noc.grnet.gr/)
 - `<OOB>` is the name of an oob (i.e. lenovo)
 - `<username>` is the username associated with a specific oob.
   while
@@ -62,6 +62,8 @@ those from the configuration file. The environment variables supported are:
 
 - `RACKOPS_USERNAME`
 - `RACKOPS_PASSWORD`
+- `RACKOPS_NFS_SHARE`
+- `RACKOPS_HTTP_SHARE`
 
 If command line arguments for the username and password are defined, they will overwrite
 those from the configuration file and the environment variables.

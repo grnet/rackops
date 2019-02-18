@@ -14,8 +14,7 @@ class Dell(OobBase):
             Popen(['moob', '-u', '{}'.format(self.username),
                   '-p', '{}'.format(self.password), '-m', ipmi_host.replace("https://", "")])
         except OSError:
-            print('Please "apt-get install libcurl4-openssl-dev"\
-                   then "gem install moob"')
+            print('Please run "gem install moob"')
             sys.exit(10)
 
     def _ssh(self, command):
