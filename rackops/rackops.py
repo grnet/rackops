@@ -82,11 +82,13 @@ class Rackops:
         else:
             config["password"] = getpass("Please provide an IPMI password: ")
 
-        config['nfs_share'] = False
-        if oob_params.get('nfs_share', None) or env_vars.get('nfs_share', None):
-            config['nfs_share'] = True
+        config['nfs_share'] = None
+        if env_vars.get('nfs_share', None):
+             config['nfs_share'] = env_vars['nfs_share']
+        elif oob_params.get('nfs_share', None):
+            config['nfs_share'] = oob_params['nfs_share']
 
-        config['http_share'] = False
+        config['http_share'] = None
         if env_vars.get('http_share', None):
             config['http_share'] = env_vars['http_share']
         elif oob_params.get('http_share', None):
