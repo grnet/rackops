@@ -174,5 +174,8 @@ class OobBase(object):
     def idrac_info(self):
         raise NotImplementedError("idrac-info command is not implemented in child process")
 
+    def remove_autoupdate(self):
+        raise NotImplementedError("remove-autoupdate command is not implemented in child process")
+
 class OobError(Exception):
     pass

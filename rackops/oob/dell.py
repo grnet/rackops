@@ -95,3 +95,7 @@ class Dell(OobBase):
         bios_info = 'racadm get bios.sysinformation'
         print(self._ssh(firm_info))
         print(self._ssh(bios_info))
+
+    def clear_autoupdate(self):
+        clear_command = 'racadm autoupdatescheduler clear'
+        print(self._ssh(clear_command))
