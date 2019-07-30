@@ -177,5 +177,8 @@ class OobBase(object):
     def remove_autoupdate(self):
         raise NotImplementedError("remove-autoupdate command is not implemented in child process")
 
+    def flush_jobs(self):
+        raise NotImplementedError("flush-jobs command is not implemented in child process")
+
 class OobError(Exception):
     pass

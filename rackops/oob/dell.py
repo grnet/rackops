@@ -99,3 +99,7 @@ class Dell(OobBase):
     def clear_autoupdate(self):
         clear_command = 'racadm autoupdatescheduler clear'
         print(self._ssh(clear_command))
+
+    def flush_jobs(self):
+        flush_command = 'racadm jobqueue delete --all'
+        print(self._ssh(flush_command))

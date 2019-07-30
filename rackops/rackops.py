@@ -13,7 +13,7 @@ class Rackops:
         "idrac-info", "autoupdate", "upgrade", "diagnostics",
         "power-status", "power-on", "power-off", "power-cycle", "power-reset",
         "boot-pxe", "boot-local",
-        "ipmi-reset", "ipmi-logs", "clear-autoupdate"]
+        "ipmi-reset", "ipmi-logs", "clear-autoupdate", "flush-jobs"]
     def __init__(self, command, identifier, rack, rack_unit, serial, command_args, args, config, env_vars):
         if command not in self.COMMANDS:
             raise RackopsError("Invalid command")
