@@ -103,3 +103,15 @@ class Dell(OobBase):
     def flush_jobs(self):
         flush_command = 'racadm jobqueue delete --all'
         print(self._ssh(flush_command))
+
+    def pdisks_status(self):
+        pdisks_status_command = 'racadm storage get pdisks -o'
+        print(self._ssh(pdisks_status_command))
+
+    def storage_status(self):
+        storage_status_command = 'racadm storage get status'
+        print(self._ssh(storage_status_command))
+
+    def controllers_status(self):
+        controllers_status_command = 'racadm storage get controllers -o'
+        print(self._ssh(controllers_status_command))

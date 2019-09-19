@@ -180,5 +180,14 @@ class OobBase(object):
     def flush_jobs(self):
         raise NotImplementedError("flush-jobs command is not implemented in child process")
 
+    def pdisks_status(self):
+        raise NotImplementedError("pdisks-status command is not implemented in child process")
+
+    def storage_status(self):
+        raise NotImplementedError("storage-status command is not implemented in child process")
+
+    def controllers_status(self):
+        raise NotImplementedError("controllers-status command is not implemented in child process")
+
 class OobError(Exception):
     pass
