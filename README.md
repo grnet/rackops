@@ -29,6 +29,7 @@ The configuration file should have this form:
 ```
 [<DCIM1>]
 api_url = <api_url1>
+netbox_token = <netbox_api_token>           ; optional, NetBox API token
 
 [<DCIM2>]
 api_url = <api_url2>
