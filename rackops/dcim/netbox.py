@@ -7,8 +7,8 @@ import logging
 from rackops.dcim.base import DcimBase, DcimError
 
 class Netbox(DcimBase):
-    def __init__(self, identifier, is_rack, is_rack_unit, is_serial, api_url):
-        super(Netbox, self).__init__(identifier, is_rack, is_rack_unit, is_serial, api_url)
+    def __init__(self, identifier, is_rack, is_rack_unit, is_serial, dcim_params):
+        super(Netbox, self).__init__(identifier, is_rack, is_rack_unit, is_serial, dcim_params)
         self.info = self._retrieve_info()
 
     def _get_params(self):
@@ -35,7 +35,12 @@ class Netbox(DcimBase):
         return response["results"][0]["id"]
 
     def _get_headers(self):
-        return {"Accept": "application/json"}
+        headers = {"Accept": "application/json"}
+
+        token = self.dcim_params.get("netbox_token")
+        if token is not None:
+            headers.update({"Authorization": f"Token: {token}"})
+        return headers
 
     def _do_request(self, url, params):
         headers = self._get_headers()

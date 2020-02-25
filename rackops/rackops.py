@@ -53,7 +53,7 @@ class Rackops:
         dcim = self.args.dcim.lower()
         dcim_params = self.config[dcim]
         try:
-            return self._dcim_table()[dcim](self.identifier, self.rack, self.rack_unit, self.serial, dcim_params['api_url'])
+            return self._dcim_table()[dcim](self.identifier, self.rack, self.rack_unit, self.serial, dcim_params)
         except KeyError:
             raise RackopsError("Not a valid dcim")
 
